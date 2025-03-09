@@ -114,7 +114,7 @@ export class FrontOfficeLayoutComponent implements OnInit {
           console.log('Navigation finished or canceled');
           setTimeout(() => {
             this.isLoading = false;
-          }, 300); // Delay for a smoother transition
+          }, 400); // Delay for a smoother transition
         }
       });
     });
