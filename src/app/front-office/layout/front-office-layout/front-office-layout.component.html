@@ -1,9 +1,9 @@
 <!-- Preloader: Displayed only when isLoading is true -->
 <app-preloader [isLoading]="isLoading"></app-preloader>
 
-<main>
+<main [@routeAnimations]="prepareRoute(outlet)">
   <app-navbar></app-navbar>
-  <router-outlet></router-outlet>
+  <router-outlet #outlet="outlet"></router-outlet>
 </main>
 
 <app-footer></app-footer>

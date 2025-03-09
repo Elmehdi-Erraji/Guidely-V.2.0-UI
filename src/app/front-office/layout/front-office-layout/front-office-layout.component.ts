@@ -4,13 +4,32 @@ import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationErr
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { PreloaderComponent } from '../../shared/preloader/preloader.component';
-import {filter} from 'rxjs';
+import { filter } from 'rxjs';
+import { trigger, transition, style, animate, query, group } from '@angular/animations';
 
 @Component({
   standalone: true,
   selector: 'front-office-layout',
   imports: [RouterOutlet, NavbarComponent, FooterComponent, PreloaderComponent],
-  templateUrl: './front-office-layout.component.html'
+  templateUrl: './front-office-layout.component.html',
+  animations: [
+    trigger('routeAnimations', [
+      transition('* <=> *', [
+        // Set initial state for entering route
+        query(':enter', style({ opacity: 0 }), { optional: true }),
+        group([
+          // Fade out the leaving view
+          query(':leave', [
+            animate('300ms ease-out', style({ opacity: 0 }))
+          ], { optional: true }),
+          // Fade in the entering view
+          query(':enter', [
+            animate('300ms ease-out', style({ opacity: 1 }))
+          ], { optional: true })
+        ])
+      ])
+    ])
+  ]
 })
 export class FrontOfficeLayoutComponent implements OnInit {
   isLoading: boolean = true;
@@ -19,13 +38,12 @@ export class FrontOfficeLayoutComponent implements OnInit {
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document,
     private router: Router,
-    private ngZone: NgZone // Inject NgZone here, no need to import it in the decorator.
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
     // Load front office CSS assets
     this.isLoading = true;
-
 
     const styleUrls: string[] = [
       'assets_guest/css/bootstrap.min.css',
@@ -94,25 +112,28 @@ export class FrontOfficeLayoutComponent implements OnInit {
           this.isLoading = true;
         } else {
           console.log('Navigation finished or canceled');
-          // Add a slight delay to make the preloader visible for at least a short time
           setTimeout(() => {
             this.isLoading = false;
-          }, 300); // 300ms delay for better visual effect
+          }, 300); // Delay for a smoother transition
         }
       });
     });
-    // Add an initial timeout to hide the preloader after assets are loaded
+
+    // Hide the preloader after window load as fallback
     window.addEventListener('load', () => {
       setTimeout(() => {
         this.isLoading = false;
       }, 200);
     });
 
-    // Fallback timeout in case the load event doesn't fire
+    // Fallback timeout
     setTimeout(() => {
       this.isLoading = false;
     }, 1000);
+  }
 
-
+  // This method is used by the router outlet to trigger animations
+  prepareRoute(outlet: RouterOutlet) {
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
   }
 }
