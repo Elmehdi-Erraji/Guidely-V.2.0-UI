@@ -1,5 +1,5 @@
-import {frontOfficeRoutes} from './front-office/front-office.routes';
-import {Routes} from '@angular/router';
+import { frontOfficeRoutes } from './front-office/front-office.routes';
+import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   ...frontOfficeRoutes,

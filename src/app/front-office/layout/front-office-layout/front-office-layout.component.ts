@@ -1,23 +1,32 @@
-import { Component, OnInit, Renderer2, Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import {NavbarComponent} from '../../shared/navbar/navbar.component';
-import {FooterComponent} from '../../shared/footer/footer.component';
+import { Component, OnInit, Renderer2, Inject, NgZone } from '@angular/core';
+import { DOCUMENT, NgIf } from '@angular/common';
+import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError, RouterOutlet } from '@angular/router';
+import { NavbarComponent } from '../../shared/navbar/navbar.component';
+import { FooterComponent } from '../../shared/footer/footer.component';
+import { PreloaderComponent } from '../../shared/preloader/preloader.component';
+import {filter} from 'rxjs';
 
 @Component({
   standalone: true,
   selector: 'front-office-layout',
-  imports: [RouterOutlet, NavbarComponent, FooterComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, PreloaderComponent],
   templateUrl: './front-office-layout.component.html'
 })
 export class FrontOfficeLayoutComponent implements OnInit {
+  isLoading: boolean = true;
+
   constructor(
     private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private router: Router,
+    private ngZone: NgZone // Inject NgZone here, no need to import it in the decorator.
   ) {}
 
   ngOnInit(): void {
-    // Array of front office CSS assets
+    // Load front office CSS assets
+    this.isLoading = true;
+
+
     const styleUrls: string[] = [
       'assets_guest/css/bootstrap.min.css',
       'assets_guest/css/font-awesome.min.css',
@@ -42,7 +51,7 @@ export class FrontOfficeLayoutComponent implements OnInit {
       this.renderer.appendChild(this.document.head, linkEl);
     });
 
-    // Array of front office JS assets
+    // Load front office JS assets
     const scriptUrls: string[] = [
       'assets_guest/js/jquery-3.6.0.min.js',
       'assets_guest/js/popper.min.js',
@@ -65,9 +74,45 @@ export class FrontOfficeLayoutComponent implements OnInit {
     scriptUrls.forEach(url => {
       const scriptEl = this.renderer.createElement('script');
       this.renderer.setAttribute(scriptEl, 'src', url);
-      // Optionally, you can set attributes like async or defer if needed:
+      // Optionally, set async or defer if needed:
       // this.renderer.setAttribute(scriptEl, 'async', 'true');
       this.renderer.appendChild(this.document.body, scriptEl);
     });
+
+    // Listen for router events to manage the preloader state
+    this.router.events.pipe(
+      filter(event =>
+        event instanceof NavigationStart ||
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      )
+    ).subscribe(event => {
+      this.ngZone.run(() => {
+        if (event instanceof NavigationStart) {
+          console.log('NavigationStart detected');
+          this.isLoading = true;
+        } else {
+          console.log('Navigation finished or canceled');
+          // Add a slight delay to make the preloader visible for at least a short time
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 300); // 300ms delay for better visual effect
+        }
+      });
+    });
+    // Add an initial timeout to hide the preloader after assets are loaded
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 200);
+    });
+
+    // Fallback timeout in case the load event doesn't fire
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000);
+
+
   }
 }
