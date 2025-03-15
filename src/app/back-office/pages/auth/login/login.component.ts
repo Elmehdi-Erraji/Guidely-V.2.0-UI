@@ -14,6 +14,7 @@ import {AuthService} from '../../../../core/services/auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string | null = null;
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -27,28 +28,25 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    // Check if the form is valid before submitting
     if (this.loginForm.invalid) {
       this.errorMessage = 'Please enter a valid email and password';
       return;
     }
-
     const { email, password } = this.loginForm.value;
-
-    // Call the login endpoint through AuthService
+    this.errorMessage = null;
+    this.isLoading = true;
     this.authService.login(email, password).subscribe({
       next: (response) => {
         console.log('Login successful:', response);
-        // Save tokens in local storage
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
-
-        // Navigate to the dashboard (or any other route)
+        this.isLoading = false;
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         console.error('Login error:', error);
         this.errorMessage = 'Invalid email or password. Please try again.';
+        this.isLoading = false;
       }
     });
   }

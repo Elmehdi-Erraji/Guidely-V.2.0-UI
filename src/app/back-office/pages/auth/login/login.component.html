@@ -15,48 +15,38 @@
                   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                     <div class="mb-3">
                       <label for="email" class="form-label">Email address</label>
-                      <input
-                        class="form-control"
-                        type="email"
-                        id="email"
-                        placeholder="Enter your email"
-                        formControlName="email"
-                      />
+                      <input class="form-control" type="email" id="email" placeholder="Enter your email" formControlName="email">
                       <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="text-danger">
                         <small *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</small>
-                        <small *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</small>
+                        <small *ngIf="loginForm.get('email')?.errors?.['email']">Enter a valid email</small>
                       </div>
                     </div>
 
                     <div class="mb-3">
-                      <a href="/dashboard/forgot-password" class="text-muted float-end">
-                        <small>Forgot your password?</small>
-                      </a>
+                      <a href="dashboard/auth/forgetPassword" class="text-muted float-end"><small>Forgot your password?</small></a>
                       <label for="password" class="form-label">Password</label>
-                      <input
-                        class="form-control"
-                        type="password"
-                        id="password"
-                        placeholder="Enter your password"
-                        formControlName="password"
-                      />
+                      <input class="form-control" type="password" id="password" placeholder="Enter your password" formControlName="password">
                       <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="text-danger">
                         <small *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</small>
-                        <small *ngIf="loginForm.get('password')?.errors?.['minlength']">
-                          Password must be at least 6 characters
-                        </small>
+                        <small *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</small>
                       </div>
                     </div>
 
                     <div class="mb-0 text-start">
-                      <button class="btn btn-soft-primary w-100" type="submit">
-                        <i class="ri-login-circle-fill me-1"></i>
-                        <span class="fw-bold">Log In</span>
+                      <button class="btn btn-soft-primary w-100" type="submit" [disabled]="isLoading">
+                        <ng-container *ngIf="!isLoading">
+                          <i class="ri-login-circle-fill me-1"></i>
+                          <span class="fw-bold">Log In</span>
+                        </ng-container>
+                        <ng-container *ngIf="isLoading">
+                          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                          Logging in...
+                        </ng-container>
                       </button>
                     </div>
 
-                    <div class="text-center mt-4" *ngIf="errorMessage">
-                      <p class="text-danger">{{ errorMessage }}</p>
+                    <div class="text-center mt-3" *ngIf="errorMessage">
+                      <small class="text-danger">{{ errorMessage }}</small>
                     </div>
 
                     <div class="text-center mt-4">
@@ -69,6 +59,7 @@
                       </div>
                     </div>
                   </form>
+
 
                 </div>
               </div>
