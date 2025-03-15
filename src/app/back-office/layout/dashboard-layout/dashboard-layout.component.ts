@@ -4,14 +4,22 @@ import { RouterOutlet } from '@angular/router';
 import { DashboardTopbarComponent } from '../../shared/dashboard-topbar/dashboard-topbar.component';
 import { DashboardSidebarComponent } from '../../shared/dashboard-sidebar/dashboard-sidebar.component';
 import { DashboardFooterComponent } from '../../shared/dashboard-footer/dashboard-footer.component';
+import { PreloaderComponent } from '../../../front-office/shared/preloader/preloader.component';
 
 @Component({
   standalone: true,
   selector: 'dashboard-layout',
-  imports: [RouterOutlet, DashboardTopbarComponent, DashboardSidebarComponent, DashboardFooterComponent],
+  imports: [
+    RouterOutlet,
+    DashboardTopbarComponent,
+    DashboardSidebarComponent,
+    DashboardFooterComponent,
+    PreloaderComponent
+  ],
   templateUrl: './dashboard-layout.component.html'
 })
 export class DashboardLayoutComponent implements OnInit {
+  isLoading: boolean = true;
 
   constructor(
     private renderer: Renderer2,
@@ -19,7 +27,7 @@ export class DashboardLayoutComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Array of CSS assets specific to the dashboard pages
+    // Load CSS assets specific to the dashboard pages
     const styleUrls: string[] = [
       'assets/css/app.min.css',
       'assets/css/icons.min.css'
@@ -29,7 +37,7 @@ export class DashboardLayoutComponent implements OnInit {
       const linkEl = this.renderer.createElement('link');
       this.renderer.setAttribute(linkEl, 'rel', 'stylesheet');
       this.renderer.setAttribute(linkEl, 'href', url);
-      // If this is app.min.css, set the id so that app.min.js can find it
+      // If this is app.min.css, set an id so that app.min.js can reference it if needed
       if (url.indexOf('app.min.css') !== -1) {
         this.renderer.setAttribute(linkEl, 'id', 'app-style');
       }
@@ -49,12 +57,19 @@ export class DashboardLayoutComponent implements OnInit {
 
   private loadScriptsSequentially(urls: string[], index: number = 0): void {
     if (index >= urls.length) {
+      // All scripts have loaded; hide the preloader.
+      this.isLoading = false;
       return;
     }
     const scriptEl = this.renderer.createElement('script');
     this.renderer.setAttribute(scriptEl, 'src', urls[index]);
     scriptEl.onload = () => {
-      // Load the next script after the current one is loaded
+      // Proceed to load the next script after the current one has finished loading
+      this.loadScriptsSequentially(urls, index + 1);
+    };
+    scriptEl.onerror = () => {
+      console.error('Error loading script: ' + urls[index]);
+      // Even if an error occurs, continue with loading the next script
       this.loadScriptsSequentially(urls, index + 1);
     };
     this.renderer.appendChild(this.document.body, scriptEl);

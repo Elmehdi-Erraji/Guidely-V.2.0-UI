@@ -1,14 +1,16 @@
 import { Component, OnInit, Renderer2, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { PreloaderComponent } from '../../../front-office/shared/preloader/preloader.component';
 
 @Component({
   standalone: true,
   selector: 'dashboard-auth-layout',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, PreloaderComponent],
   templateUrl: './auth-layout.component.html'
 })
 export class AuthLayoutComponent implements OnInit {
+  isLoading: boolean = true;
 
   constructor(
     private renderer: Renderer2,
@@ -16,6 +18,8 @@ export class AuthLayoutComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
+
     // Array of CSS assets specific to the auth pages
     const styleUrls: string[] = [
       'assets/js/config.js',
@@ -41,5 +45,17 @@ export class AuthLayoutComponent implements OnInit {
       // Optionally set async or defer attributes here
       this.renderer.appendChild(this.document.body, scriptEl);
     });
+
+    // Hide the preloader when the window has fully loaded
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 200);
+    });
+
+    // Fallback timeout in case the load event doesn't fire
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000);
   }
 }
