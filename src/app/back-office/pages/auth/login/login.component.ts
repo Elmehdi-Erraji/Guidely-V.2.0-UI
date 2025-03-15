@@ -39,6 +39,7 @@ export class LoginComponent {
     this.authService.login(email, password).subscribe({
       next: (response) => {
         console.log('Login successful:', response);
+        localStorage.setItem('role', response.role);
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
         this.isLoading = false;
