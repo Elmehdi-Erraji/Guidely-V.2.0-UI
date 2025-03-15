@@ -8,11 +8,12 @@ export const frontOfficeRoutes: Routes = [
   {
     path: 'front-office',
     component: FrontOfficeLayoutComponent,
+    data: { preload: true }, // For custom preloading
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomeComponent },
-      { path: 'about', component: AboutComponent },
-      { path: 'contact', component: ContactComponent }
+      { path: 'home', component: HomeComponent, data: { preload: true } },
+      { path: 'about', component: AboutComponent, data: { preload: true } },
+      { path: 'contact', component: ContactComponent, data: { preload: true } }
     ]
   }
 ];
