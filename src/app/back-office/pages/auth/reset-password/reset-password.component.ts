@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import {AuthService} from '../../../../core/services/auth.service';
-import {NgIf} from '@angular/common';
+import { AuthService } from '../../../../core/services/auth.service';
+import { NgIf } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-reset-password',
@@ -63,12 +64,20 @@ export class ResetPasswordComponent implements OnInit {
     this.authService.resetPassword(payload).subscribe({
       next: () => {
         this.isLoading = false;
-        // Redirect to the login page upon successful password reset.
-        this.router.navigate(['dashboard/auth/login']);
+        Swal.fire({
+          icon: 'success',
+          title: 'Password Reset Successfully',
+          text: 'Your password has been updated successfully.',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          this.router.navigate(['dashboard/auth/login']);
+        });
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = 'Reset failed. The token may be invalid or expired.';
+        console.error('Reset error:', err);
       }
     });
   }

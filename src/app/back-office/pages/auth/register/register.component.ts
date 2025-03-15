@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import {AuthService} from '../../../../core/services/auth.service';
-import {NgIf} from '@angular/common';
+import { AuthService } from '../../../../core/services/auth.service';
+import { NgIf } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -45,7 +46,15 @@ export class RegisterComponent {
       next: (response) => {
         console.log('Registration successful:', response);
         this.isLoading = false;
-        this.router.navigate(['dashboard/auth/login']);
+        Swal.fire({
+          icon: 'success',
+          title: 'Registered Successfully',
+          text: 'Your account has been created successfully!',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          this.router.navigate(['dashboard/auth/login']);
+        });
       },
       error: (err) => {
         console.error('Registration error:', err);

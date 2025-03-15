@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import {AuthService} from '../../../../core/services/auth.service';
-import {NgIf} from '@angular/common';
+import { AuthService } from '../../../../core/services/auth.service';
+import { NgIf } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-forget-password',
@@ -38,8 +39,16 @@ export class ForgetPasswordComponent {
       next: (response) => {
         console.log('Reset password request successful:', response);
         this.isLoading = false;
-        // Redirect to the login page on success
-        this.router.navigate(['dashboard/auth/PasswordReset']);
+        Swal.fire({
+          icon: 'success',
+          title: 'Reset Email Sent',
+          text: 'Please check your email for the password reset link.',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          // Navigate to the reset password page if needed or to login page
+          this.router.navigate(['dashboard/auth/login']);
+        });
       },
       error: (err) => {
         console.error('Reset password error:', err);

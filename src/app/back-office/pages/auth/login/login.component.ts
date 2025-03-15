@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import {NgIf, NgOptimizedImage} from '@angular/common';
-import {AuthService} from '../../../../core/services/auth.service';
+import { NgIf, NgOptimizedImage } from '@angular/common';
+import { AuthService } from '../../../../core/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -41,7 +42,15 @@ export class LoginComponent {
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
         this.isLoading = false;
-        this.router.navigate(['/dashboard']);
+        Swal.fire({
+          icon: 'success',
+          title: 'Logged in Successfully',
+          text: 'Welcome back!',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          this.router.navigate(['/dashboard']);
+        });
       },
       error: (error) => {
         console.error('Login error:', error);
