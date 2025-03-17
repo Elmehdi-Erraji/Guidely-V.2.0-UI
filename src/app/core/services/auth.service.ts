@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -34,4 +34,39 @@ export class AuthService {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });
   }
+
+  getUserRole(): string | null {
+    return localStorage.getItem('role');
+  }
+
+  logout(): void {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('role');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  }
+
+  getProfile(): Observable<any> {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.error('No access token found in localStorage.');
+    }
+    const headers = new HttpHeaders({
+      'Authentication': `Bearer ${token}`
+    });
+    return this.http.get<any>(`${this.baseUrl}/profile`, { headers });
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('accessToken');
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  getRole(): string | null {
+    return localStorage.getItem('role');
+  }
+
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgIf, NgOptimizedImage } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { AuthService } from '../../../../core/services/auth.service';
 import Swal from 'sweetalert2';
 
@@ -39,6 +39,7 @@ export class LoginComponent {
     this.authService.login(email, password).subscribe({
       next: (response) => {
         console.log('Login successful:', response);
+        localStorage.setItem('userId', response.id);
         localStorage.setItem('role', response.role);
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
@@ -50,7 +51,7 @@ export class LoginComponent {
           timer: 2000,
           showConfirmButton: false
         }).then(() => {
-          this.router.navigate(['/dashboard']);
+          this.redirectUser(response.role);
         });
       },
       error: (error) => {
@@ -59,5 +60,23 @@ export class LoginComponent {
         this.isLoading = false;
       }
     });
+  }
+
+  private redirectUser(role: string): void {
+    // Normalize the role string to uppercase for consistency
+    switch (role.toUpperCase()) {
+      case 'ADMIN':
+        this.router.navigate(['/dashboard', 'admin']);
+        break;
+      case 'SUPPORT_AGENT':
+        this.router.navigate(['/dashboard', 'support_agent']);
+        break;
+      case 'USER':
+        this.router.navigate(['/dashboard', 'user']);
+        break;
+      default:
+        this.router.navigate(['/dashboard', 'profile']);
+        break;
+    }
   }
 }

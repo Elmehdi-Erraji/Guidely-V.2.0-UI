@@ -1,104 +1,136 @@
 <div class="leftside-menu">
   <!-- Brand Logo Light -->
   <a href="#" class="logo logo-light">
-                <span class="logo-lg">
-                    <img src="assets/images/logo-sm.png" alt="logo">
-                </span>
+    <span class="logo-lg">
+      <img src="assets/images/logo-sm.png" alt="logo">
+    </span>
     <span class="logo-sm">
-                    <img src="assets/images/logo-sm.png" alt="small logo">
-                </span>
+      <img src="assets/images/logo-sm.png" alt="small logo">
+    </span>
   </a>
 
   <!-- Brand Logo Dark -->
   <a href="#" class="logo logo-dark">
-                <span class="logo-lg">
-                    <img src="assets/images/logo-sm.png" alt="dark logo">
-                </span>
+    <span class="logo-lg">
+      <img src="assets/images/logo-sm.png" alt="dark logo">
+    </span>
     <span class="logo-sm">
-                    <img src="assets/images/logo-sm.png" alt="small logo">
-                </span>
+      <img src="assets/images/logo-sm.png" alt="small logo">
+    </span>
   </a>
+
   <!-- Sidebar -left -->
   <div class="h-100" id="leftside-menu-container" data-simplebar>
     <!-- Sidemenu -->
     <ul class="side-nav">
-      <!-- Section Title -->
-      <li class="side-nav-title">Main</li>
 
-      <!-- Dashboard -->
-      <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-dashboard-3-line"></i>
-          <span> Dashboard </span>
-        </a>
-      </li>
+      <!-- ADMIN MENU -->
+      <ng-container *ngIf="userRole === 'ADMIN'">
+        <li class="side-nav-title">Admin Menu</li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-dashboard-3-line"></i>
+            <span> Dashboard </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-question-line"></i>
+            <span> All FAQs </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-user-line"></i>
+            <span> Users </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-team-line"></i>
+            <span> Clients </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-building-2-line"></i>
+            <span> Departments </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-folders-line"></i>
+            <span> Categories </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-ticket-line"></i>
+            <span> Tickets </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-time-line"></i>
+            <span> All Logs </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-chat-1-line"></i>
+            <span> Chat </span>
+          </a>
+        </li>
+      </ng-container>
 
-      <!-- All FAQs -->
-      <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-question-line"></i>
-          <span> All FAQs </span>
-        </a>
-      </li>
+      <!-- USER MENU -->
+      <ng-container *ngIf="userRole === 'USER'">
+        <li class="side-nav-title">User Menu</li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-question-line"></i>
+            <span> All FAQs </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-ticket-line"></i>
+            <span> My Tickets </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-chat-1-line"></i>
+            <span> Chat </span>
+          </a>
+        </li>
+      </ng-container>
 
-      <!-- Users -->
-      <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-user-line"></i>
-          <span> Users </span>
-        </a>
-      </li>
+      <!-- SUPPORT AGENT MENU -->
+      <ng-container *ngIf="userRole === 'SUPPORT_AGENT'">
+        <li class="side-nav-title">Support Agent Menu</li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-ticket-line"></i>
+            <span> Tickets </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-question-line"></i>
+            <span> All FAQs </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="#" class="side-nav-link">
+            <i class="ri-chat-1-line"></i>
+            <span> Chat </span>
+          </a>
+        </li>
+      </ng-container>
 
-      <!-- Clients -->
-      <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-team-line"></i>
-          <span> Clients </span>
-        </a>
-      </li>
-
-      <!-- Departments -->
-      <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-building-2-line"></i>
-          <span> Departments </span>
-        </a>
-      </li>
-
-      <!-- Categories -->
-      <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-folders-line"></i>
-          <span> Categories </span>
-        </a>
-      </li>
-
-      <!-- FAQs -->
-      <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-question-answer-line"></i>
-          <span> FAQs </span>
-        </a>
-      </li>
-
-      <!-- Tickets -->
-      <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-ticket-line"></i>
-          <span> Tickets </span>
-        </a>
-      </li>
-
-      <!-- All Logs -->
-      <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-time-line"></i>
-          <span> All Logs </span>
-        </a>
-      </li>
     </ul>
     <!-- End Sidemenu -->
-
     <div class="clearfix"></div>
   </div>
 </div>
