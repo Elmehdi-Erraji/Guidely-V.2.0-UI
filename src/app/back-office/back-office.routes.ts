@@ -11,6 +11,10 @@ import {AuthGuard} from '../core/guards/auth.guard';
 import {AgentHomeComponent} from './pages/dashboard/agent/agent-home/agent-home.component';
 import {UserHomeComponent} from './pages/dashboard/client/user-home/user-home.component';
 import {AdminHomeComponent} from './pages/dashboard/admin/admin-home/admin-home.component';
+import {LogsComponent} from './pages/dashboard/admin/logs/logs.component';
+import {CategoriesComponent} from './pages/dashboard/admin/categories/categories.component';
+import {DepartmentsComponent} from './pages/dashboard/admin/departments/departments.component';
+import {FaqAllComponent} from './pages/dashboard/faq-all/faq-all.component';
 
 export const backOfficeRoutes: Routes = [
   {
@@ -34,13 +38,18 @@ export const backOfficeRoutes: Routes = [
         canActivate: [AuthGuard],
         component: ProfileComponent
       },
-      // Admin routes
+      { path: 'allFaq', component: FaqAllComponent },
+
       {
         path: 'admin',
         canActivate: [RoleGuard],
         data: { roles: ['ADMIN'] },
         children: [
-          { path: '', component: AdminHomeComponent }
+          { path: '', component: AdminHomeComponent },
+          { path: 'logs', component: LogsComponent },
+          { path: 'categories', component: CategoriesComponent },
+          { path: 'departments', component: DepartmentsComponent },
+
         ]
       },
       {
@@ -51,7 +60,7 @@ export const backOfficeRoutes: Routes = [
           { path: '', component: AgentHomeComponent }
         ]
       },
-      // User routes
+
       {
         path: 'user',
         canActivate: [RoleGuard],
