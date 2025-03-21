@@ -1,0 +1,192 @@
+<div class="container-fluid">
+  <!-- Start Page Title -->
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="profile-bg-picture" style="background-image:url('../../../../assets/images/bg-profile.jpg')">
+        <span class="picture-bg-overlay"></span>
+        <!-- overlay -->
+      </div>
+      <!-- Meta -->
+      <div class="profile-user-box">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="profile-user-img">
+              <img [src]="profileData?.image || 'assets/images/profile.png'" alt="User Avatar" class="avatar-lg rounded-circle">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex justify-content-end align-items-center gap-2">
+              <button type="button" class="btn btn-info" id="edit-profile-button">
+                <i class="ri-settings-2-line align-text-bottom me-1 fs-16 lh-1"></i>
+                Edit Profile
+              </button>
+              <button type="button" class="btn btn-soft-danger" id="delete-account-button" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="ri-delete-bin-line align-text-bottom me-1 fs-16 lh-1"></i>
+                Delete Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Meta -->
+    </div>
+  </div>
+
+  <!-- Delete Profile Modal -->
+  <div id="deleteModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form id="delete-account-form" action="delete-profile.html" method="POST" class="ps-3 pe-3">
+            <!-- Static form action; add CSRF/method fields if needed -->
+            <div class="mb-3">
+              <label for="password1" class="form-label">Password</label>
+              <input class="form-control" type="password" required id="password1" name="password" placeholder="Enter your password">
+            </div>
+            <div class="mb-3 text-center">
+              <button class="btn rounded-pill btn-primary" type="submit">Delete account</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+
+  <!-- Profile Content Tabs -->
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card p-0">
+        <div class="card-body p-0">
+          <div class="profile-content">
+            <ul class="nav nav-underline nav-justified gap-0">
+              <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#aboutme" role="tab" aria-selected="true" href="#aboutme">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#edit-profile" role="tab" aria-selected="false" href="#edit-profile">Personal Info</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#my_requests" role="tab" aria-selected="false" href="#my_requests">Password ...</a>
+              </li>
+            </ul>
+
+            <div class="tab-content m-0 p-4">
+              <!-- Profile Tab -->
+              <div class="tab-pane active" id="aboutme" role="tabpanel" tabindex="0">
+                <div class="profile-desk">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <!-- Display user name -->
+                      <h2 class="text-uppercase fs-24 text-dark">{{ profileData?.name }}</h2>
+                      <div class="mt-4">
+                        <h4 class="fs-20 text-dark">Contact Information</h4>
+                        <!-- Display email -->
+                        <p class="text-muted fs-16">
+                          <strong>Email:</strong>
+                          <a [href]="'mailto:' + profileData?.email">{{ profileData?.email }}</a>
+                        </p>
+                        <!-- Display role -->
+                        <p class="text-muted fs-16">
+                          <strong>Role:</strong> {{ profileData?.roleName }}
+                        </p>
+                        <!-- Display department -->
+                        <p class="text-muted fs-16">
+                          <strong>Department:</strong> {{ profileData?.departmentName }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- Edit Profile Tab -->
+              <div id="edit-profile" class="tab-pane">
+                <div class="user-profile-content">
+                  <form action="update-profile.html" method="POST" id="profileForm" enctype="multipart/form-data">
+                    <!-- Hidden field for user ID -->
+                    <input type="hidden" name="user_id" value="1">
+                    <div class="row row-cols-sm-2 row-cols-1">
+                      <div class="mb-2">
+                        <label class="form-label" >Name</label>
+                        <input type="text" value="John" id="name" name="name" class="form-control">
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" value="john@example.com" id="email" name="email" class="form-control">
+                      </div>
+                    </div>
+                    <button class="btn btn-primary" type="submit"><i class="ri-save-line me-1 fs-16 lh-1"></i> Save</button>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Password Change Tab -->
+              <div id="my_requests" class="tab-pane">
+                <div class="row m-t-10">
+                  <!-- Password Change Form (Left Side) -->
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <h4 class="card-title">Change Password</h4>
+                        <form action="update-password.html" method="POST">
+                          <div class="mb-3">
+                            <label for="current_password" class="form-label">Current Password</label>
+                            <div class="input-group">
+                              <input type="password" class="form-control" id="current_password" name="current_password" required>
+                              <div class="input-group-text" data-password="false">
+                                <span class="password-eye"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label for="new_password" class="form-label">New Password</label>
+                            <div class="input-group">
+                              <input type="password" class="form-control" id="new_password" name="new_password" required>
+                              <div class="input-group-text" data-password="false">
+                                <span class="password-eye"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm New Password</label>
+                            <div class="input-group">
+                              <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                              <div class="input-group-text" data-password="false">
+                                <span class="password-eye"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <button type="submit" class="btn btn-primary">Change Password</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Password Requirements Info (Right Side) -->
+                  <div class="col-md-6">
+                    <div class="card" style="background-color: orange;">
+                      <div class="card-body" style="color: white;">
+                        <h4 class="card-title">Password Requirements</h4>
+                        <ul>
+                          <li>Password must be at least 8 characters long</li>
+                          <li>Password must contain at least one uppercase letter</li>
+                          <li>Password must contain at least one lowercase letter</li>
+                          <li>Password must contain at least one number</li>
+                          <li>Password must contain at least one special character</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Password Change Tab -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Profile Content Tabs -->
+    </div>
+  </div>
+</div>

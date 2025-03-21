@@ -1,9 +1,10 @@
-<!-- Preloader: Displayed only when isLoading is true -->
+<!-- front-office-layout.component.html -->
 <app-preloader [isLoading]="isLoading"></app-preloader>
 
-<main [@routeAnimations]="prepareRoute(outlet)">
-  <app-navbar></app-navbar>
-  <router-outlet #outlet="outlet"></router-outlet>
-</main>
-
-<app-footer></app-footer>
+<ng-container *ngIf="!isLoading">
+  <main [@routeAnimations]="prepareRoute(outlet)">
+    <app-navbar></app-navbar>
+    <router-outlet #outlet="outlet"></router-outlet>
+    <app-footer></app-footer>
+  </main>
+</ng-container>

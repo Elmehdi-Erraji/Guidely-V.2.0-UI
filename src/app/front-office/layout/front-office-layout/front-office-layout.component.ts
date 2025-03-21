@@ -10,7 +10,7 @@ import { trigger, transition, style, animate, query, group } from '@angular/anim
 @Component({
   standalone: true,
   selector: 'front-office-layout',
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, PreloaderComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, PreloaderComponent, NgIf],
   templateUrl: './front-office-layout.component.html',
   animations: [
     trigger('routeAnimations', [
@@ -71,21 +71,7 @@ export class FrontOfficeLayoutComponent implements OnInit {
 
     // Load front office JS assets
     const scriptUrls: string[] = [
-      'assets_guest/js/jquery-3.6.0.min.js',
-      'assets_guest/js/popper.min.js',
-      'assets_guest/js/bootstrap.bundle.min.js',
-      'assets_guest/js/jquery.appear.js',
-      'assets_guest/js/jquery.easing.min.js',
-      'assets_guest/js/jquery.magnific-popup.min.js',
-      'assets_guest/js/modernizr.custom.13711.js',
-      'assets_guest/js/owl.carousel.min.js',
-      'assets_guest/js/wow.min.js',
-      'assets_guest/js/progress-bar.min.js',
-      'assets_guest/js/isotope.pkgd.min.js',
-      'assets_guest/js/imagesloaded.pkgd.min.js',
-      'assets_guest/js/count-to.js',
-      'assets_guest/js/YTPlayer.min.js',
-      'assets_guest/js/validnavs.js',
+
       'assets_guest/js/main.js'
     ];
 

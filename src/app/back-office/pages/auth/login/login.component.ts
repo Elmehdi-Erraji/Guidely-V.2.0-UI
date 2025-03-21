@@ -1,17 +1,82 @@
 import { Component } from '@angular/core';
-import {NgOptimizedImage} from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { AuthService } from '../../../../core/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
-  imports: [
-
-  ],
+  standalone: true,
+  imports: [ReactiveFormsModule, NgIf],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  loginForm: FormGroup;
+  errorMessage: string | null = null;
+  isLoading: boolean = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
+
   onSubmit() {
-    // Handle login logic here (e.g., call a service, validate credentials, etc.)
-    console.log('Login form submitted');
+    if (this.loginForm.invalid) {
+      this.errorMessage = 'Please enter a valid email and password';
+      return;
+    }
+    const { email, password } = this.loginForm.value;
+    this.errorMessage = null;
+    this.isLoading = true;
+    this.authService.login(email, password).subscribe({
+      next: (response) => {
+        console.log('Login successful:', response);
+        localStorage.setItem('userId', response.id);
+        localStorage.setItem('role', response.role);
+        localStorage.setItem('accessToken', response.accessToken);
+        localStorage.setItem('refreshToken', response.refreshToken);
+        this.isLoading = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Logged in Successfully',
+          text: 'Welcome back!',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          this.redirectUser(response.role);
+        });
+      },
+      error: (error) => {
+        console.error('Login error:', error);
+        this.errorMessage = 'Invalid email or password. Please try again.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private redirectUser(role: string): void {
+    // Normalize the role string to uppercase for consistency
+    switch (role.toUpperCase()) {
+      case 'ADMIN':
+        this.router.navigate(['/dashboard', 'admin']);
+        break;
+      case 'SUPPORT_AGENT':
+        this.router.navigate(['/dashboard', 'support_agent']);
+        break;
+      case 'USER':
+        this.router.navigate(['/dashboard', 'user']);
+        break;
+      default:
+        this.router.navigate(['/dashboard', 'profile']);
+        break;
+    }
   }
 }
