@@ -22,25 +22,26 @@
         <div class="card">
           <div class="card-body p-0">
             <div class="p-3">
+
               <div class="row align-items-center">
                 <div class="col-lg-8">
-                  <div class="app-search">
-                    <form id="searchForm">
-                      <div class="input-group">
-                        <input type="text" class="form-control form-control-sm me-2"
-                               placeholder="Search for departments" name="search_query" id="searchQuery">
-                        <button type="submit" class="btn btn-primary ms-2" id="searchButton">Search</button>
-                      </div>
-                    </form>
-                  </div>
-                  <br><br>
-                  <div class="col-lg-6">
-                    <button type="button" class="btn btn-primary" id="addButton"
-                            style="width: 30%" data-bs-toggle="modal"
-                            data-bs-target="#addDepartmentModal">Add A Department</button>
-                  </div>
+                  <form (submit)="searchDepartments(); $event.preventDefault();" id="searchForm">
+                    <div class="input-group">
+                      <input type="text" class="form-control form-control-sm"
+                             placeholder="Search for departments"
+                             name="search_query" [(ngModel)]="searchQuery" id="searchQuery" ngModel>
+                      <button type="submit" class="btn btn-primary ms-2" id="searchButton">Search</button>
+                    </div>
+                  </form>
+                </div>
+                <div class="col-lg-4 text-end mt-2 mt-lg-0">
+                  <button type="button" class="btn btn-primary"
+                          id="addButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addDepartmentModal">Add A Department</button>
                 </div>
               </div>
+
             </div>
 
             <div class="table-responsive mt-3">
@@ -48,25 +49,20 @@
                 <thead class="thead-light">
                 <tr>
                   <th scope="col">Department</th>
-                  <th scope="col">Agents</th>
-                  <th scope="col">Categories</th>
                   <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody id="tableBody">
-                <tr>
-                  <td>Customer Service</td>
-                  <td>5</td>
-                  <td>3</td>
+                <tr *ngFor="let dept of pagedDepartments">
+                  <td>{{ dept.name }}</td>
                   <td>
-                    <button type="button" class="btn btn-sm btn-danger delete-btn"
-                            data-id="1">Delete</button>
-                    <button type="button" class="btn btn-sm btn-primary edit-btn"
-                            data-id="1" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-sm btn-danger me-2" (click)="confirmDelete(dept)">Delete</button>
+                    <button type="button" class="btn btn-sm btn-primary"
+                            (click)="openEditModal(dept)" data-bs-toggle="modal"
                             data-bs-target="#editDepartmentModal">Update</button>
                   </td>
+
                 </tr>
-                <!-- Add more sample rows as needed -->
                 </tbody>
               </table>
 
@@ -74,11 +70,15 @@
               <div class="pagination justify-content-center mt-3">
                 <nav aria-label="Page navigation">
                   <ul class="pagination">
-                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    <li class="page-item" [class.disabled]="currentPage === 0">
+                      <a class="page-link" href="#" (click)="goToPage(currentPage - 1)">Previous</a>
+                    </li>
+                    <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="i === currentPage">
+                      <a class="page-link" href="#" (click)="goToPage(i)">{{ i + 1 }}</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                      <a class="page-link" href="#" (click)="goToPage(currentPage + 1)">Next</a>
+                    </li>
                   </ul>
                 </nav>
               </div>
@@ -90,6 +90,9 @@
   </div>
 </div>
 
+<!-- Add and Edit Modals remain unchanged -->
+
+
 <!-- Add Department Modal -->
 <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -99,16 +102,16 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="addDepartmentForm">
+        <form id="addDepartmentForm" (submit)="addDepartment(); $event.preventDefault();">
           <div class="mb-3">
             <label for="department_name" class="form-label">Department Name</label>
-            <input type="text" class="form-control" id="department_name" required>
+            <input type="text" class="form-control" id="department_name" [(ngModel)]="name" name="departmentName" required>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="saveDepartmentBtn">Save Department</button>
+        <button type="button" class="btn btn-primary" (click)="addDepartment()">Save Department</button>
       </div>
     </div>
   </div>
@@ -123,17 +126,16 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="editDepartmentForm">
-          <input type="hidden" id="edit_department_id">
+        <form id="editDepartmentForm" (submit)="updateDepartment(); $event.preventDefault();">
           <div class="mb-3">
             <label for="edit_department_name" class="form-label">Department Name</label>
-            <input type="text" class="form-control" id="edit_department_name" required>
+            <input type="text" class="form-control" id="edit_department_name" [(ngModel)]="editDepartmentName" name="editDepartmentName" required>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="updateDepartmentBtn">Update Department</button>
+        <button type="button" class="btn btn-primary" (click)="updateDepartment()">Update Department</button>
       </div>
     </div>
   </div>
