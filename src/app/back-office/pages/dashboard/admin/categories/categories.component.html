@@ -61,7 +61,6 @@
                     <tr>
                       <th>Category</th>
                       <th>Description</th>
-                      <th>Tickets</th>
                       <th>Faq's</th>
                       <th>Actions</th>
                     </tr>
@@ -70,7 +69,6 @@
                     <tr *ngFor="let category of pagedCategories">
                       <td>{{ category.name }}</td>
                       <td>{{ category.description }}</td>
-                      <td><!-- Placeholder for Tickets --> 0 </td>
                       <td><!-- Placeholder for Faq's --> 0 </td>
                       <td>
                         <button type="button" class="btn btn-sm btn-danger me-2" (click)="confirmDelete(category)">Delete</button>
