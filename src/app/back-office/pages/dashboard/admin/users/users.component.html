@@ -1,1 +1,339 @@
-<p>users works!</p>
+<div class="content">
+  <div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box">
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);"></a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
+              <li class="breadcrumb-item active">Welcome!</li>
+            </ol>
+          </div>
+          <h4 class="page-title">Welcome!</h4>
+        </div>
+      </div>
+    </div>
+    <!-- end page title -->
+
+    <!-- Search & Filter Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="p-3">
+              <div class="row align-items-center">
+                <div class="col-lg-8">
+                  <div class="app-search">
+                    <form (ngSubmit)="applyFilters()" id="searchForm">
+                      <div class="input-group">
+                        <input type="text" class="form-control form-control-sm me-2" placeholder="Search for users"
+                               [(ngModel)]="searchQuery" name="searchQuery">
+                        <button class="btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#filterModal">
+                          <i class="ri-filter-line"></i>
+                        </button>
+                        <button type="submit" class="btn btn-primary ms-2" id="searchButton">Search</button>
+                      </div>
+                    </form>
+                  </div>
+                  <br><br>
+                  <div class="col-lg-6">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal" (click)="openAddUserModal()" style="width: 30%">
+                      Add A User
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-responsive">
+              <table class="table table-nowrap table-hover mb-0">
+                <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>E-mail</th>
+                  <th>Role</th>
+                  <th>Department</th>
+                  <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let user of filteredUsers">
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                      <span class="badge bg-warning-subtle text-warning">
+                        {{ getRoleName(user.roleId) }}
+                      </span>
+                  </td>
+                  <td>{{ getDepartmentName(user.departmentId) }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editUserModal" (click)="openEditUserModal(user)">
+                      Edit
+                    </button>
+                    <button class="btn btn-sm btn-danger" (click)="deleteUser(user)">Delete</button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-right">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-light">
+        <h5 class="modal-title" id="filterModalLabel">Filters</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Role Filter -->
+        <div class="mb-3">
+          <label for="roleFilter" class="form-label">Role:</label>
+          <select id="roleFilter" class="form-select" [(ngModel)]="selectedRole" name="roleFilter">
+            <option value="null">Any</option>
+            <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+          </select>
+        </div>
+        <!-- Department Filter -->
+        <div class="mb-3">
+          <label for="departmentFilter" class="form-label">Department:</label>
+          <select id="departmentFilter" class="form-select" [(ngModel)]="selectedDepartment" name="departmentFilter">
+            <option value="null">Any</option>
+            <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="applyFilters()" data-bs-dismiss="modal">Apply Filters</button>
+        <button type="button" class="btn btn-secondary" (click)="resetFilters()" data-bs-dismiss="modal">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addUserForm">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="add_name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="add_name" [(ngModel)]="addUserName" name="name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="add_email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="add_email" [(ngModel)]="addUserEmail" name="email" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="add_password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="add_password" [(ngModel)]="addUserPassword" name="password" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="add_confirmPassword" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" id="add_confirmPassword" [(ngModel)]="addUserConfirmPassword" name="confirmPassword" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="add_roleId" class="form-label">Role</label>
+              <select class="form-select" id="add_roleId" [(ngModel)]="addUserRoleId" name="roleId" required>
+                <option value="">Select Role</option>
+                <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="add_departmentId" class="form-label">Department</label>
+              <select class="form-select" id="add_departmentId" [(ngModel)]="addUserDepartmentId" name="departmentId" required>
+                <option value="">Select Department</option>
+                <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="addUser()">Save User</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editUserForm">
+          <input type="hidden" id="edit_user_id" [(ngModel)]="editUserId" name="id">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="edit_name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="edit_name" [(ngModel)]="editUserName" name="name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="edit_email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="edit_email" [(ngModel)]="editUserEmail" name="email" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="edit_phone" class="form-label">Phone Number</label>
+              <input type="text" class="form-control" id="edit_phone" [(ngModel)]="editUserPhone" name="phone">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="edit_password" class="form-label">New Password (leave empty to keep current)</label>
+              <input type="password" class="form-control" id="edit_password" [(ngModel)]="editUserPassword" name="password">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="edit_role" class="form-label">Role</label>
+              <select class="form-select" id="edit_role" [(ngModel)]="editUserRoleId" name="role" required>
+                <option value="">Select Role</option>
+                <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="edit_department" class="form-label">Department</label>
+              <select class="form-select" id="edit_department" [(ngModel)]="editUserDepartmentId" name="department" required>
+                <option value="">Select Department</option>
+                <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
+              </select>
+            </div>
+          </div>
+          <!-- Additional fields such as status and avatar can be added here -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="updateUser()">Update User</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Optionally, you can add a View User Modal here -->
+
+
+<div class="modal fade" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="viewUserModalLabel">User Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 text-center mb-3">
+            <img id="view_avatar" src="assets/images/users/avatar-1.jpg" alt="Profile Image" class="rounded-circle img-thumbnail mb-2" style="width: 150px; height: 150px;">
+            <h5 id="view_name" class="mb-1">John Doe</h5>
+            <span id="view_role" class="badge bg-primary">Admin</span>
+          </div>
+          <div class="col-md-8">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                <tr>
+                  <th style="width: 30%;">Email</th>
+                  <td id="view_email">john&example.com</td>
+                </tr>
+                <tr>
+                  <th>Phone</th>
+                  <td id="view_phone">+1234567890</td>
+                </tr>
+                <tr>
+                  <th>Department</th>
+                  <td id="view_department">IT</td>
+                </tr>
+                <tr>
+                  <th>Status</th>
+                  <td>
+                    <span id="view_status" class="badge bg-warning-subtle text-warning">Active</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Created At</th>
+                  <td id="view_created_at">March 10, 2025</td>
+                </tr>
+                <tr>
+                  <th>Last Updated</th>
+                  <td id="view_updated_at">March 13, 2025</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-12">
+            <h5 class="border-bottom pb-2">Recent Activity</h5>
+            <div class="timeline-alt pb-0">
+              <div class="timeline-item">
+                <i class="mdi mdi-account-plus bg-info-subtle text-info timeline-icon"></i>
+                <div class="timeline-item-info">
+                  <a href="#" class="text-info fw-bold mb-1 d-block">Account created</a>
+                  <small>March 10, 2025</small>
+                  <p class="mb-0 pb-2">
+                    User account was created by admin
+                  </p>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <i class="mdi mdi-login bg-primary-subtle text-primary timeline-icon"></i>
+                <div class="timeline-item-info">
+                  <a href="#" class="text-primary fw-bold mb-1 d-block">Last login</a>
+                  <small>March 13, 2025 11:45 AM</small>
+                  <p class="mb-0 pb-2">
+                    User logged in successfully
+                  </p>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <i class="mdi mdi-update bg-warning-subtle text-warning timeline-icon"></i>
+                <div class="timeline-item-info">
+                  <a href="#" class="text-warning fw-bold mb-1 d-block">Profile updated</a>
+                  <small>March 12, 2025</small>
+                  <p class="mb-0 pb-2">
+                    User profile information was updated
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary edit-from-view" data-id="1" data-bs-toggle="modal" data-bs-target="#editUserModal">Edit User</button>
+      </div>
+    </div>
+  </div>
+</div>

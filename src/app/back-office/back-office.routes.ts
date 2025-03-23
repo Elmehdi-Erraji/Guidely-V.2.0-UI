@@ -16,6 +16,7 @@ import {CategoriesComponent} from './pages/dashboard/admin/categories/categories
 import {DepartmentsComponent} from './pages/dashboard/admin/departments/departments.component';
 import {FaqAllComponent} from './pages/dashboard/faq-all/faq-all.component';
 import {FaqComponent} from './pages/dashboard/admin/faq/faq.component';
+import {UsersComponent} from './pages/dashboard/admin/users/users.component';
 
 export const backOfficeRoutes: Routes = [
   {
@@ -50,7 +51,8 @@ export const backOfficeRoutes: Routes = [
           { path: 'logs', component: LogsComponent },
           { path: 'categories', component: CategoriesComponent },
           { path: 'departments', component: DepartmentsComponent },
-          { path: 'faq', component: FaqComponent }
+          { path: 'faq', component: FaqComponent },
+          { path: 'users', component: UsersComponent}
 
         ]
       },
