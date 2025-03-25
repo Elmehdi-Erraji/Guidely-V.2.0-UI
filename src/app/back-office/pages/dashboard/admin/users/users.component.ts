@@ -117,7 +117,8 @@ export class UsersComponent implements OnInit {
     this.filteredUsers = [...this.users];
   }
 
-  // Helper methods to display role and department names (if needed)
+  // Helper methods to display role and department names.
+  // Now they accept the entire user object.
   getRoleName(user: UserResponse): string {
     return user.roleName;
   }

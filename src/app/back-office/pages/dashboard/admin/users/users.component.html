@@ -67,10 +67,10 @@
                   <td>{{ user.email }}</td>
                   <td>
                       <span class="badge bg-warning-subtle text-warning">
-                        {{ getRoleName(user.roleId) }}
+                        {{ getRoleName(user) }}
                       </span>
                   </td>
-                  <td>{{ getDepartmentName(user.departmentId) }}</td>
+                  <td>{{ getDepartmentName(user) }}</td>
                   <td>
                     <button class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editUserModal" (click)="openEditUserModal(user)">
                       Edit
@@ -226,7 +226,6 @@
               </select>
             </div>
           </div>
-          <!-- Additional fields such as status and avatar can be added here -->
         </form>
       </div>
       <div class="modal-footer">
@@ -237,9 +236,7 @@
   </div>
 </div>
 
-<!-- Optionally, you can add a View User Modal here -->
-
-
+<!-- View User Modal -->
 <div class="modal fade" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby="viewUserModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
