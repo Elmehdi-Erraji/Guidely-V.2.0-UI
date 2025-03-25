@@ -38,8 +38,8 @@ export class UsersComponent implements OnInit {
   editUserId: string = '';
   editUserName: string = '';
   editUserEmail: string = '';
-  editUserPhone: string = ''; // optional field, if needed
-  editUserPassword: string = ''; // leave empty if not changing
+  editUserPhone: string = ''; // no longer used in the edit modal
+  editUserPassword: string = ''; // no longer used in the edit modal
   editUserRoleId: string = '';
   editUserDepartmentId: string = '';
   editUserStatus: string = ''; // e.g. "1" for Pending, "2" for Active, etc.
@@ -118,7 +118,6 @@ export class UsersComponent implements OnInit {
   }
 
   // Helper methods to display role and department names.
-  // Now they accept the entire user object.
   getRoleName(user: UserResponse): string {
     return user.roleName;
   }
@@ -178,10 +177,19 @@ export class UsersComponent implements OnInit {
     this.editUserId = user.id;
     this.editUserName = user.name;
     this.editUserEmail = user.email;
-    // If the findAll API doesn’t return roleId/departmentId, use fallback (empty string)
-    this.editUserRoleId = user.roleId || '';
+    // Check if user has a roleId; if not, use roleName to find matching role.
+    if (user.roleId && user.roleId.trim() !== '') {
+      this.editUserRoleId = user.roleId;
+    } else if (user.roleName) {
+      const matchingRole = this.roles.find(role => role.name.toLowerCase() === user.roleName.toLowerCase());
+      this.editUserRoleId = matchingRole ? matchingRole.id : '';
+    } else {
+      this.editUserRoleId = '';
+    }
     this.editUserDepartmentId = user.departmentId || '';
-    this.editUserPassword = ''; // leave blank for no change
+    // Clear password and phone fields as they're not used in the edit modal.
+    this.editUserPassword = '';
+    this.editUserPhone = '';
   }
 
   updateUser(): void {
