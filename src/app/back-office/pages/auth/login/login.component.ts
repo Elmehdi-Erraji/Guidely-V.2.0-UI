@@ -63,13 +63,12 @@ export class LoginComponent {
   }
 
   private redirectUser(role: string): void {
-    // Normalize the role string to uppercase for consistency
     switch (role.toUpperCase()) {
       case 'ADMIN':
         this.router.navigate(['/dashboard', 'admin']);
         break;
       case 'SUPPORT_AGENT':
-        this.router.navigate(['/dashboard', 'support_agent']);
+        this.router.navigate(['/dashboard', 'agent']);
         break;
       case 'USER':
         this.router.navigate(['/dashboard', 'user']);

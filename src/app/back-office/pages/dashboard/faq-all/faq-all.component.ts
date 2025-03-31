@@ -4,6 +4,7 @@ import { Category, CategoryService } from '../../../../core/services/category.se
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { NgForOf, NgIf } from '@angular/common';
+import { AuthService } from '../../../../core/services/auth.service'; // Import AuthService
 
 @Component({
   selector: 'app-faq-all',
@@ -28,12 +29,20 @@ export class FaqAllComponent implements OnInit {
   // List of categories loaded from the backend
   categories: Category[] = [];
 
+  // Property to hold the authenticated user's role
+  userRole: string | null = null;
+
   constructor(
     private faqService: FaqService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private authService: AuthService  // Inject AuthService
   ) {}
 
   ngOnInit(): void {
+    // Retrieve and store the user's role
+    this.userRole = this.authService.getUserRole();
+    console.log('user role:', this.userRole);
+
     this.loadFaqs();
     this.loadCategories();
   }

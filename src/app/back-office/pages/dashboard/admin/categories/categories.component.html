@@ -61,7 +61,6 @@
                     <tr>
                       <th>Category</th>
                       <th>Description</th>
-                      <th>Faq's</th>
                       <th>Actions</th>
                     </tr>
                     </thead>
@@ -69,7 +68,6 @@
                     <tr *ngFor="let category of pagedCategories">
                       <td>{{ category.name }}</td>
                       <td>{{ category.description }}</td>
-                      <td><!-- Placeholder for Faq's --> 0 </td>
                       <td>
                         <button type="button" class="btn btn-sm btn-danger me-2" (click)="confirmDelete(category)">Delete</button>
                         <button type="button" class="btn btn-sm btn-primary" (click)="openEditModal(category)" data-bs-toggle="modal" data-bs-target="#editCategoryModal">

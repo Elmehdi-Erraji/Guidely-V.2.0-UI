@@ -44,13 +44,37 @@
 
               <!-- Action Buttons -->
               <div class="mt-3">
-                <a href="tickets.html" class="btn btn-primary mt-2 me-1">
-                  <i class="ri-folder-line me-1"></i> View Tickets
-                </a>
-                <a href="dashboard.html" class="btn btn-info mt-2">
-                  <i class="ri-bar-chart-line me-1"></i> View Statistics
-                </a>
+                <!-- ADMIN BUTTONS -->
+                <ng-container *ngIf="userRole === 'ADMIN'">
+                  <a href="tickets.html" class="btn btn-primary mt-2 me-1">
+                    <i class="ri-folder-line me-1"></i> View Tickets
+                  </a>
+                  <a href="dashboard.html" class="btn btn-info mt-2">
+                    <i class="ri-bar-chart-line me-1"></i> View Statistics
+                  </a>
+                </ng-container>
+
+                <!-- SUPPORT AGENT BUTTONS -->
+                <ng-container *ngIf="userRole === 'SUPPORT_AGENT'">
+                  <a href="agent-tickets.html" class="btn btn-primary mt-2 me-1">
+                    <i class="ri-folder-line me-1"></i> My Tickets
+                  </a>
+                  <a href="dashboard/agent/faq" class="btn btn-info mt-2">
+                    <i class="ri-question-line me-1"></i> Add FAQ
+                  </a>
+                </ng-container>
+
+                <!-- USER BUTTONS -->
+                <ng-container *ngIf="userRole === 'USER'">
+                  <a href="my-tickets.html" class="btn btn-primary mt-2 me-1">
+                    <i class="ri-folder-line me-1"></i> My Tickets
+                  </a>
+                  <a href="add-ticket.html" class="btn btn-info mt-2">
+                    <i class="ri-add-circle-line me-1"></i> Add Ticket
+                  </a>
+                </ng-container>
               </div>
+
             </div>
           </div>
         </div>
