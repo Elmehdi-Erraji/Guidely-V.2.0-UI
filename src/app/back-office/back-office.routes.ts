@@ -18,6 +18,8 @@ import {FaqAllComponent} from './pages/dashboard/faq-all/faq-all.component';
 import {FaqComponent} from './pages/dashboard/admin/faq/faq.component';
 import {UsersComponent} from './pages/dashboard/admin/users/users.component';
 import {TicketsComponent} from './pages/dashboard/admin/tickets/tickets.component';
+import {AgentTicketsComponent} from './pages/dashboard/agent/agent-tickets/agent-tickets.component';
+import {ClientTicketsComponent} from './pages/dashboard/client/client-tickets/client-tickets.component';
 
 export const backOfficeRoutes: Routes = [
   {
@@ -65,6 +67,7 @@ export const backOfficeRoutes: Routes = [
         children: [
           { path: '', component: FaqAllComponent },
           { path: 'faq', component: FaqComponent },
+          { path: 'tickets', component: AgentTicketsComponent}
         ]
       },
 
@@ -73,7 +76,8 @@ export const backOfficeRoutes: Routes = [
         canActivate: [RoleGuard],
         data: { roles: ['USER'] },
         children: [
-          { path: 'welcome', component: UserHomeComponent }
+          { path: 'welcome', component: UserHomeComponent },
+          { path: 'tickets', component: ClientTicketsComponent}
         ]
       },
       { path: '', redirectTo: 'profile', pathMatch: 'full' }
