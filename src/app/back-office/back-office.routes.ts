@@ -76,7 +76,7 @@ export const backOfficeRoutes: Routes = [
         canActivate: [RoleGuard],
         data: { roles: ['USER'] },
         children: [
-          { path: 'welcome', component: UserHomeComponent },
+          { path: '', component: FaqAllComponent },
           { path: 'tickets', component: ClientTicketsComponent}
         ]
       },
