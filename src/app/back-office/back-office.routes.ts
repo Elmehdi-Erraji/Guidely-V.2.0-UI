@@ -15,6 +15,11 @@ import {LogsComponent} from './pages/dashboard/admin/logs/logs.component';
 import {CategoriesComponent} from './pages/dashboard/admin/categories/categories.component';
 import {DepartmentsComponent} from './pages/dashboard/admin/departments/departments.component';
 import {FaqAllComponent} from './pages/dashboard/faq-all/faq-all.component';
+import {FaqComponent} from './pages/dashboard/admin/faq/faq.component';
+import {UsersComponent} from './pages/dashboard/admin/users/users.component';
+import {TicketsComponent} from './pages/dashboard/admin/tickets/tickets.component';
+import {AgentTicketsComponent} from './pages/dashboard/agent/agent-tickets/agent-tickets.component';
+import {ClientTicketsComponent} from './pages/dashboard/client/client-tickets/client-tickets.component';
 
 export const backOfficeRoutes: Routes = [
   {
@@ -49,15 +54,20 @@ export const backOfficeRoutes: Routes = [
           { path: 'logs', component: LogsComponent },
           { path: 'categories', component: CategoriesComponent },
           { path: 'departments', component: DepartmentsComponent },
+          { path: 'faq', component: FaqComponent },
+          { path: 'users', component: UsersComponent},
+          { path: 'tickets', component: TicketsComponent}
 
         ]
       },
       {
-        path: 'support_agent',
+        path: 'agent',
         canActivate: [RoleGuard],
         data: { roles: ['SUPPORT_AGENT'] },
         children: [
-          { path: '', component: AgentHomeComponent }
+          { path: '', component: FaqAllComponent },
+          { path: 'faq', component: FaqComponent },
+          { path: 'tickets', component: AgentTicketsComponent}
         ]
       },
 
@@ -66,7 +76,8 @@ export const backOfficeRoutes: Routes = [
         canActivate: [RoleGuard],
         data: { roles: ['USER'] },
         children: [
-          { path: 'welcome', component: UserHomeComponent }
+          { path: '', component: FaqAllComponent },
+          { path: 'tickets', component: ClientTicketsComponent}
         ]
       },
       { path: '', redirectTo: 'profile', pathMatch: 'full' }

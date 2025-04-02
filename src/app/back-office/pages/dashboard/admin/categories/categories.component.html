@@ -1,5 +1,4 @@
 <div class="content">
-  <!-- Main Content -->
   <div class="container-fluid">
     <!-- start page title -->
     <div class="row">
@@ -17,6 +16,7 @@
       </div>
     </div>
     <!-- end page title -->
+
     <div class="row">
       <div class="col-12">
         <!-- Categories Table -->
@@ -24,108 +24,57 @@
           <div class="card-body p-0">
             <div class="card">
               <div class="card-body p-0">
+
                 <div class="p-3">
                   <div class="row align-items-center">
+                    <!-- Search + Filter -->
                     <div class="col-lg-8">
-                      <div class="app-search">
-                        <form id="searchForm">
-                          <div class="input-group">
-                            <input type="text" class="form-control form-control-sm me-2" placeholder="Search for categories" name="search_query" id="searchQuery">
-                            <button class="btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#filterModal">
-                              <i class="ri-filter-line"></i>
-                            </button>
-                            <button type="submit" class="btn btn-primary ms-2" id="searchButton">Search</button>
-                          </div>
+                      <form (submit)="searchCategories(); $event.preventDefault();" id="searchForm">
+                        <div class="input-group">
+                          <input type="text" class="form-control form-control-sm"
+                                 placeholder="Search for categories"
+                                 name="search_query" [(ngModel)]="searchQuery" id="searchQuery" ngModel>
+                          <button class="btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#filterModal">
+                            <i class="ri-filter-line"></i>
+                          </button>
+                          <button type="submit" class="btn btn-primary ms-2" id="searchButton">Search</button>
+                        </div>
+                      </form>
+                    </div>
 
-                          <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg modal-right">
-                              <div class="modal-content">
-                                <div class="modal-header bg-primary text-light">
-                                  <h5 class="modal-title" id="filterModalLabel">Filters</h5>
-                                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                  <div class="mb-3">
-                                    <label for="departmentFilter" class="form-label">Department:</label>
-                                    <select id="departmentFilter" class="form-select" name="department">
-                                      <option value="null">Any</option>
-                                      <option value="1">Customer Service</option>
-                                      <option value="2">Technical Support</option>
-                                      <option value="3">Billing Department</option>
-                                      <option value="4">Sales Department</option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="submit" class="btn btn-primary">Apply Filters</button>
-                                  <button type="button" class="btn btn-secondary" id="resetFilters">Reset</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                        </form>
-
-                      </div>
-                      <br><br>
-                      <div class="col-lg-6">
-                        <button type="button" class="btn btn-primary" id="addButton" style="width: 30%" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add A Category</button>
-                      </div>
+                    <!-- Add Button -->
+                    <div class="col-lg-4 text-end mt-3 mt-lg-0">
+                      <button type="button" class="btn btn-primary"
+                              id="addButton"
+                              data-bs-toggle="modal"
+                              data-bs-target="#addCategoryModal">
+                        Add A Category
+                      </button>
                     </div>
                   </div>
                 </div>
+
 
                 <div class="table-responsive mt-3">
                   <table class="table table-nowrap table-hover mb-0">
                     <thead>
                     <tr>
                       <th>Category</th>
-                      <th>Department</th>
-                      <th>Tickets</th>
-                      <th>Faq's</th>
+                      <th>Description</th>
                       <th>Actions</th>
                     </tr>
                     </thead>
-                    <tbody id="tableBody">
-                    <tr>
-                      <td>Hardware Issues</td>
-                      <td>Technical Support</td>
-                      <td>8</td>
-                      <td>5</td>
+                    <tbody>
+                    <tr *ngFor="let category of pagedCategories">
+                      <td>{{ category.name }}</td>
+                      <td>{{ category.description }}</td>
                       <td>
-                        <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="1">Delete</button>
-                        <button type="button" class="btn btn-sm btn-primary edit-btn" data-id="1" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Update</button>
+                        <button type="button" class="btn btn-sm btn-danger me-2" (click)="confirmDelete(category)">Delete</button>
+                        <button type="button" class="btn btn-sm btn-primary" (click)="openEditModal(category)" data-bs-toggle="modal" data-bs-target="#editCategoryModal">
+                          Update
+                        </button>
                       </td>
-                    </tr>
-                    <tr>
-                      <td>Account Problems</td>
-                      <td>Customer Service</td>
-                      <td>12</td>
-                      <td>7</td>
-                      <td>
-                        <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="2">Delete</button>
-                        <button type="button" class="btn btn-sm btn-primary edit-btn" data-id="2" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Update</button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Payment Issues</td>
-                      <td>Billing Department</td>
-                      <td>5</td>
-                      <td>10</td>
-                      <td>
-                        <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="3">Delete</button>
-                        <button type="button" class="btn btn-sm btn-primary edit-btn" data-id="3" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Update</button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Product Information</td>
-                      <td>Sales Department</td>
-                      <td>3</td>
-                      <td>15</td>
-                      <td>
-                        <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="4">Delete</button>
-                        <button type="button" class="btn btn-sm btn-primary edit-btn" data-id="4" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Update</button>
-                      </td>
+
                     </tr>
                     </tbody>
                   </table>
@@ -133,11 +82,15 @@
                   <div class="pagination mt-3">
                     <nav aria-label="Page navigation example">
                       <ul class="pagination">
-                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        <li class="page-item" [class.disabled]="currentPage === 0">
+                          <a class="page-link" href="#" (click)="goToPage(currentPage - 1)">Previous</a>
+                        </li>
+                        <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="i === currentPage">
+                          <a class="page-link" href="#" (click)="goToPage(i)">{{ i + 1 }}</a>
+                        </li>
+                        <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                          <a class="page-link" href="#" (click)="goToPage(currentPage + 1)">Next</a>
+                        </li>
                       </ul>
                     </nav>
                   </div>
@@ -150,6 +103,7 @@
     </div>
   </div>
 </div>
+
 <!-- Add Category Modal -->
 <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -159,26 +113,20 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="addCategoryForm">
+        <form (submit)="addCategory(); $event.preventDefault();" id="addCategoryForm">
           <div class="mb-3">
             <label for="add_name" class="form-label">Category Name</label>
-            <input type="text" class="form-control" id="add_name" name="name" required>
+            <input type="text" class="form-control" id="add_name" [(ngModel)]="addName" name="name" required>
           </div>
           <div class="mb-3">
-            <label for="add_department" class="form-label">Department</label>
-            <select class="form-select" id="add_department" name="department_id" required>
-              <option value="">Select a department</option>
-              <option value="1">Customer Service</option>
-              <option value="2">Technical Support</option>
-              <option value="3">Billing Department</option>
-              <option value="4">Sales Department</option>
-            </select>
+            <label for="add_description" class="form-label">Description</label>
+            <textarea class="form-control" id="add_description" [(ngModel)]="addDescription" name="description" rows="3"></textarea>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="saveCategoryBtn">Save Category</button>
+        <button type="button" class="btn btn-primary" (click)="addCategory()">Save Category</button>
       </div>
     </div>
   </div>
@@ -193,27 +141,21 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="editCategoryForm">
-          <input type="hidden" id="edit_category_id" name="id">
+        <form (submit)="updateCategory(); $event.preventDefault();" id="editCategoryForm">
+          <input type="hidden" id="edit_category_id" [(ngModel)]="editCategoryId" name="id">
           <div class="mb-3">
             <label for="edit_name" class="form-label">Category Name</label>
-            <input type="text" class="form-control" id="edit_name" name="name" required>
+            <input type="text" class="form-control" id="edit_name" [(ngModel)]="editName" name="name" required>
           </div>
           <div class="mb-3">
-            <label for="edit_department" class="form-label">Department</label>
-            <select class="form-select" id="edit_department" name="department_id" required>
-              <option value="">Select a department</option>
-              <option value="1">Customer Service</option>
-              <option value="2">Technical Support</option>
-              <option value="3">Billing Department</option>
-              <option value="4">Sales Department</option>
-            </select>
+            <label for="edit_description" class="form-label">Description</label>
+            <textarea class="form-control" id="edit_description" [(ngModel)]="editDescription" name="description" rows="3"></textarea>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="updateCategoryBtn">Update Category</button>
+        <button type="button" class="btn btn-primary" (click)="updateCategory()">Update Category</button>
       </div>
     </div>
   </div>

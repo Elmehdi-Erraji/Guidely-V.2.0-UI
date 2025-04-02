@@ -1,1 +1,164 @@
-<p>faq-all works!</p>
+<div class="content">
+  <div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box">
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Velonic</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
+              <li class="breadcrumb-item active">FAQ</li>
+            </ol>
+          </div>
+          <h4 class="page-title">FAQ</h4>
+        </div>
+      </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+      <div class="col-12">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="mb-4 text-center">
+              <h3>Frequently Asked Questions</h3>
+              <p class="text-muted mt-3">
+                Do you have questions regarding technical issues, sales inquiries, or billing concerns?
+                Here, you'll find helpful answers to common questions about our products and services.
+              </p>
+
+              <!-- Search form with category filter -->
+              <form id="searchForm" (ngSubmit)="applyFilters()">
+                <div class="input-group">
+                  <input type="text" class="form-control form-control-sm me-2"
+                         placeholder="Search FAQs..." name="searchQuery"
+                         [(ngModel)]="searchQuery">
+                  <button class="btn bg-white" type="button" data-bs-toggle="modal"
+                          data-bs-target="#filterModal">
+                    <i class="ri-filter-line"></i>
+                  </button>
+                  <button type="submit" class="btn btn-primary ms-2" id="searchButton">Search</button>
+                </div>
+              </form>
+
+              <!-- Action Buttons -->
+              <div class="mt-3">
+                <!-- ADMIN BUTTONS -->
+                <ng-container *ngIf="userRole === 'ADMIN'">
+                  <a href="/dashboard/admin/tickets" class="btn btn-primary mt-2 me-1">
+                    <i class="ri-folder-line me-1"></i> View Tickets
+                  </a>
+                  <a href="/dashboard/admin" class="btn btn-info mt-2">
+                    <i class="ri-bar-chart-line me-1"></i> View Statistics
+                  </a>
+                </ng-container>
+
+                <!-- SUPPORT AGENT BUTTONS -->
+                <ng-container *ngIf="userRole === 'SUPPORT_AGENT'">
+                  <a href="agent-tickets.html" class="btn btn-primary mt-2 me-1">
+                    <i class="ri-folder-line me-1"></i> My Tickets
+                  </a>
+                  <a href="dashboard/agent/faq" class="btn btn-info mt-2">
+                    <i class="ri-question-line me-1"></i> Add FAQ
+                  </a>
+                </ng-container>
+
+                <!-- USER BUTTONS -->
+                <ng-container *ngIf="userRole === 'USER'">
+                  <a href="dashboard/user/tickets" class="btn btn-primary mt-2 me-1">
+                    <i class="ri-folder-line me-1"></i> My Tickets
+                  </a>
+                  <a href="dashboard/user/tickets" class="btn btn-info mt-2">
+                    <i class="ri-add-circle-line me-1"></i> Add Ticket
+                  </a>
+                </ng-container>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="row justify-content-center mt-4">
+              <div class="col-10">
+                <div class="row" id="resultContainer">
+                  <!-- FAQ items are rendered here using *ngFor -->
+                  <div class="row">
+                    <div class="col-md-4 mb-4" *ngFor="let faq of filteredFaqs">
+                      <div class="d-flex align-items-start">
+                        <div class="faq-icon rounded-circle text-white me-3">
+                          <strong>Q.</strong>
+                        </div>
+                        <div>
+                          <h5 class="fw-bold">{{ faq.question }}</h5>
+                          <a href="#" class="text-dark text-decoration-underline"
+                             data-bs-toggle="modal"
+                             [attr.data-bs-target]="'#faq-modal-' + faq.id">
+                            View the answer to this question
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Modals for FAQ answers -->
+                  <div *ngFor="let faq of filteredFaqs">
+                    <div class="modal fade" [id]="'faq-modal-' + faq.id" tabindex="-1" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">{{ faq.question }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p>{{ faq.answer }}</p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Message if no FAQs match -->
+                  <div class="col-12" *ngIf="filteredFaqs.length === 0">
+                    <p class="text-center">No FAQs found.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-light">
+        <h5 class="modal-title" id="filterModalLabel">Filters</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="categoryFilter" class="form-label">Category:</label>
+          <select id="categoryFilter" class="form-select" name="categoryFilter" [(ngModel)]="selectedCategory">
+            <option value="null">Any</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetFilters()" data-bs-dismiss="modal">Reset</button>
+        <button type="button" class="btn btn-primary" (click)="applyFilters()" data-bs-dismiss="modal">Apply Filters</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -28,29 +28,31 @@
       <ng-container *ngIf="userRole === 'ADMIN'">
         <li class="side-nav-title">Admin Menu</li>
         <li class="side-nav-item">
-          <a href="#" class="side-nav-link">
+          <a href="dashboard/allFaq" class="side-nav-link">
+            <i class="ri-home-line"></i>
+            <span> Home </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="dashboard/admin/" class="side-nav-link">
             <i class="ri-dashboard-3-line"></i>
             <span> Dashboard </span>
           </a>
         </li>
+
         <li class="side-nav-item">
-          <a href="dashboard/allFaq" class="side-nav-link">
+          <a href="dashboard/admin/faq" class="side-nav-link">
             <i class="ri-question-line"></i>
             <span> All FAQs </span>
           </a>
         </li>
         <li class="side-nav-item">
-          <a href="#" class="side-nav-link">
+          <a href="dashboard/admin/users" class="side-nav-link">
             <i class="ri-user-line"></i>
             <span> Users </span>
           </a>
         </li>
-        <li class="side-nav-item">
-          <a href="#" class="side-nav-link">
-            <i class="ri-team-line"></i>
-            <span> Clients </span>
-          </a>
-        </li>
+
         <li class="side-nav-item">
           <a href="dashboard/admin/departments" class="side-nav-link">
             <i class="ri-building-2-line"></i>
@@ -64,7 +66,7 @@
           </a>
         </li>
         <li class="side-nav-item">
-          <a href="#" class="side-nav-link">
+          <a href="dashboard/admin/tickets" class="side-nav-link">
             <i class="ri-ticket-line"></i>
             <span> Tickets </span>
           </a>
@@ -87,13 +89,13 @@
       <ng-container *ngIf="userRole === 'USER'">
         <li class="side-nav-title">User Menu</li>
         <li class="side-nav-item">
-          <a href="#" class="side-nav-link">
-            <i class="ri-question-line"></i>
-            <span> All FAQs </span>
+          <a href="dashboard/allFaq" class="side-nav-link">
+            <i class="ri-home-line"></i>
+            <span> Home </span>
           </a>
         </li>
         <li class="side-nav-item">
-          <a href="#" class="side-nav-link">
+          <a href="dashboard/user/tickets" class="side-nav-link">
             <i class="ri-ticket-line"></i>
             <span> My Tickets </span>
           </a>
@@ -110,13 +112,19 @@
       <ng-container *ngIf="userRole === 'SUPPORT_AGENT'">
         <li class="side-nav-title">Support Agent Menu</li>
         <li class="side-nav-item">
-          <a href="#" class="side-nav-link">
+          <a href="dashboard/allFaq" class="side-nav-link">
+            <i class="ri-home-line"></i>
+            <span> Home </span>
+          </a>
+        </li>
+        <li class="side-nav-item">
+          <a href="dashboard/agent/tickets" class="side-nav-link">
             <i class="ri-ticket-line"></i>
             <span> Tickets </span>
           </a>
         </li>
         <li class="side-nav-item">
-          <a href="#" class="side-nav-link">
+          <a href="dashboard/agent/faq" class="side-nav-link">
             <i class="ri-question-line"></i>
             <span> All FAQs </span>
           </a>

@@ -1,0 +1,11 @@
+.faq-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #00c9a7; /* Light green */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 0 15px rgba(0, 201, 167, 0.3);
+}

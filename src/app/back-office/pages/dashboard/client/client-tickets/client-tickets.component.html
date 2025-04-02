@@ -1,0 +1,181 @@
+<div class="content">
+  <div class="container-fluid">
+    <!-- Page Title -->
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box">
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);"> </a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
+              <li class="breadcrumb-item active">Tickets</li>
+            </ol>
+          </div>
+          <h4 class="page-title">Welcome!</h4>
+        </div>
+      </div>
+    </div>
+    <!-- End Page Title -->
+
+    <!-- Search + Add Ticket Button Row -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="p-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <form class="d-flex" (submit)="searchTickets(); $event.preventDefault();" id="searchForm">
+                  <input type="text" class="form-control form-control-sm me-2" placeholder="Search by ticket title..."
+                         [(ngModel)]="searchQuery" name="searchQuery">
+                  <button class="btn btn-primary btn-sm" type="submit">Search</button>
+                </form>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addTicketModal">
+                  Add Ticket
+                </button>
+              </div>
+            </div>
+
+            <!-- Tickets Table -->
+            <div class="table-responsive">
+              <table class="table table-nowrap table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>User</th>
+                  <th>Agent</th>
+                  <th>Created At</th>
+                  <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let ticket of paginatedTickets">
+                  <td>{{ ticket.id }}</td>
+                  <td>{{ ticket.title }}</td>
+                  <td>
+                    <span *ngIf="ticket.priority === 'HIGH'" class="badge bg-danger">High</span>
+                    <span *ngIf="ticket.priority === 'MEDIUM'" class="badge bg-warning text-dark">Medium</span>
+                    <span *ngIf="ticket.priority === 'LOW'" class="badge bg-success">Low</span>
+                  </td>
+                  <td>
+                    <span *ngIf="ticket.status === 'OPEN'" class="badge bg-primary">Open</span>
+                    <span *ngIf="ticket.status === 'IN_PROGRESS'" class="badge bg-warning text-dark">In Progress</span>
+                    <span *ngIf="ticket.status === 'RESOLVED'" class="badge bg-success">Resolved</span>
+                    <span *ngIf="ticket.status === 'CLOSED'" class="badge bg-secondary">Closed</span>
+                  </td>
+                  <td>{{ ticket.createdByName }}</td>
+                  <td>{{ ticket.assignedToName }}</td>
+                  <td>{{ ticket.createdAt | date: 'medium' }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-success me-1" data-bs-toggle="modal" data-bs-target="#viewTicketModal" (click)="openTicket(ticket)">
+                      View
+                    </button>
+                    <button *ngIf="canUpdateOrDelete(ticket)" class="btn btn-sm btn-primary me-1" (click)="updateTicket(ticket)">
+                      Update
+                    </button>
+                    <button *ngIf="canUpdateOrDelete(ticket)" class="btn btn-sm btn-danger" (click)="deleteTicket(ticket)">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination justify-content-center mt-3" *ngIf="totalPages > 1">
+              <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <li class="page-item" [class.disabled]="currentPage === 0">
+                    <a class="page-link" href="#" (click)="$event.preventDefault(); onPageChange(currentPage - 1)">Previous</a>
+                  </li>
+                  <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="currentPage === i">
+                    <a class="page-link" href="#" (click)="$event.preventDefault(); onPageChange(i)">{{ i + 1 }}</a>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                    <a class="page-link" href="#" (click)="$event.preventDefault(); onPageChange(currentPage + 1)">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ticket View Modal -->
+<div class="modal fade" id="viewTicketModal" tabindex="-1" role="dialog" aria-labelledby="viewTicketModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="viewTicketModalLabel">Ticket Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedTicket">
+        <h4>{{ selectedTicket.title }}</h4>
+        <p class="mb-3">{{ selectedTicket.description }}</p>
+        <div class="mb-2"><strong>Status:</strong>
+          <span *ngIf="selectedTicket.status === 'OPEN'" class="badge bg-primary">Open</span>
+          <span *ngIf="selectedTicket.status === 'IN_PROGRESS'" class="badge bg-warning text-dark">In Progress</span>
+          <span *ngIf="selectedTicket.status === 'RESOLVED'" class="badge bg-success">Resolved</span>
+          <span *ngIf="selectedTicket.status === 'CLOSED'" class="badge bg-secondary">Closed</span>
+        </div>
+        <div class="mb-2"><strong>Priority:</strong>
+          <span *ngIf="selectedTicket.priority === 'HIGH'" class="badge bg-danger">High</span>
+          <span *ngIf="selectedTicket.priority === 'MEDIUM'" class="badge bg-warning text-dark">Medium</span>
+          <span *ngIf="selectedTicket.priority === 'LOW'" class="badge bg-success">Low</span>
+        </div>
+        <div class="mb-2"><strong>Created By:</strong> {{ selectedTicket.createdByName }}</div>
+        <div class="mb-2"><strong>Assigned To:</strong> {{ selectedTicket.assignedToName }}</div>
+        <div class="mb-2"><strong>Created At:</strong> {{ selectedTicket.createdAt | date: 'medium' }}</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Update Ticket Modal (Client Update) -->
+<div class="modal fade" id="updateTicketModal" tabindex="-1" role="dialog" aria-labelledby="updateTicketModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="updateTicketModalLabel">Update Ticket</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="updateTicketForm">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="update_title" class="form-label">Title</label>
+              <input type="text" class="form-control" id="update_title" [(ngModel)]="updateTicketTitle" name="updateTitle" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="update_priority" class="form-label">Priority</label>
+              <select class="form-select" id="update_priority" [(ngModel)]="updateTicketPriority" name="updatePriority" required>
+                <option *ngFor="let option of priorityOptions" [value]="option">{{ option }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="update_description" class="form-label">Description</label>
+              <textarea class="form-control" id="update_description" rows="3" [(ngModel)]="updateTicketDescription" name="updateDescription" required></textarea>
+            </div>
+          </div>
+          <!-- Note: Status remains unchanged; it is not editable by the client -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="saveUpdatedTicket()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
